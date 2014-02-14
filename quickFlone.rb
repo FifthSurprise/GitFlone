@@ -4,7 +4,7 @@ def fork(user, source,repoName)
   puts `#{command}`
 end
 
-def clone (user,repoName, branch="Solution")
+def clone (user,repoName, branch="Feature")
   command = "git clone git@github.com:#{user}/#{repoName}.git"
   puts`#{command}`
   Dir.chdir("#{repoName}")
@@ -14,7 +14,7 @@ end
 
 @user = ARGV[0]
 @gitdirectory = ARGV[1]
-@branch = ARGV[2].nil? ? "Solution" : ARGV[2]
+@branch = ARGV[2].nil? ? "Feature" : ARGV[2]
 
 fork(@user,source,repoName)
 clone(@user,repoName,@branch)
