@@ -33,6 +33,6 @@ fork(@user,@source,@repoName)
 clone(@user,@repoName,@branch)
 
 puts "Create an initial commit for pull request?"
-puts "Provide a value for dummy pull request or leave blank to skip:"
+puts "If so, provide a value for dummy pull request or leave blank to skip:"
 dummy = STDIN.gets
 pull(dummy)
