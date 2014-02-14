@@ -23,11 +23,18 @@ def shell (command)
   puts `#{command}`
 end
 
+def checkArg (pattern, string)
+  values = string.scan(pattern).flatten.uniq!
+  raise ArgumentError, "Argument is invalid: #{string}" unless values.length==1
+  #puts "Found #{values.first}"
+  return values.first
+end
+
 @user = ARGV[0]
 @gitdirectory = ARGV[1].split(":").last
 @branch = ARGV[2].nil? ? "Feature" : ARGV[2]
-@source = @gitdirectory.split("/").first
-@repoName = (@gitdirectory.split("/").last).split(".").first
+@source = checkArg(%r[(?<=:)(\S+)(?=\/)], ARGV[1])
+@repoName = checkArg(%r[(?<=\/)(\S+)(?=\.)],ARGV[1])
 
 fork(@user,@source,@repoName)
 clone(@user,@repoName,@branch)
