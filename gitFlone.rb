@@ -1,28 +1,26 @@
 def fork(user, source,repoName)
-  command = "curl -u '#{user}' https://api.github.com/repos/#{source}/#{repoName}/forks -d '{}'"
-  puts `#{command}`
+  shell %Q[curl -u '#{user}' https://api.github.com/repos/#{source}/#{repoName}/forks -d '{}']
 end
 
 def clone (user,repoName, branch="Feature")
-  command = "git clone git@github.com:#{user}/#{repoName}.git"
-  puts`#{command}`
+  shell"git clone git@github.com:#{user}/#{repoName}.git"
   Dir.chdir("#{repoName}")
-  command = "git checkout -b #{branch}"
-  puts`#{command}`
-  command = "git push origin #{branch}"
-  puts`#{command}`
+  shell %Q[git checkout -b #{branch}]
+  shell %Q[git push origin #{branch}]
 end
 
 def pull (dummycommit="")
-  commands = []
   if dummycommit.length > 0
-    commands = ["touch #{dummycommit}"]
-    commands.push("git add #{dummycommit}")
-    commands.push(%Q[git commit -am "Initial #{@branch} commit"])
-    commands.push(%Q[git push origin #{@branch}])
+    shell %Q[touch #{dummycommit}]
+    shell %Q[git add #{dummycommit}]
+    shell %Q[git commit -am "Initial #{@branch} commit"]
+    shell %Q[git push origin #{@branch}]
   end
-  commands.push %Q[open https://github.com/#{@user}/#{@repoName}/compare/#{@branch}?expand=1]
-  commands.each {|command|puts `#{command}`}
+  shell %Q[open https://github.com/#{@user}/#{@repoName}/compare/#{@branch}?expand=1]
+end
+
+def shell (command)
+  puts `#{command}`
 end
 
 @user = ARGV[0]
