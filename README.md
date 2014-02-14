@@ -1,4 +1,6 @@
-Quick Flone
+GitFlone
+
+Forks and Clones
 
 Fork a repository on github and then clone the forked repository to the current directory.  Afterwards, create a new branch and open a pull request in the browser back to the forked repository.
 
