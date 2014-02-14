@@ -13,9 +13,16 @@ def clone (user,repoName, branch="Feature")
   puts`#{command}`
 end
 
-def pull ()
-  command = %Q[open https://github.com/#{@user}/#{@repoName}/compare/#{@branch}?expand=1]
-  puts `#{command}`
+def pull (dummycommit="")
+  commands = []
+  if dummycommit.length > 0
+    commands = ["touch #{dummycommit}"]
+    commands.push("git add #{dummycommit}")
+    commands.push(%Q[git commit -am "Initial #{@branch} commit"])
+    commands.push(%Q[git push origin #{@branch}])
+  end
+  commands.push %Q[open https://github.com/#{@user}/#{@repoName}/compare/#{@branch}?expand=1]
+  commands.each {|command|puts `#{command}`}
 end
 
 @user = ARGV[0]
@@ -26,4 +33,8 @@ end
 
 fork(@user,@source,@repoName)
 clone(@user,@repoName,@branch)
-pull()
+
+puts "Create an initial commit for pull request?"
+puts "Provide a value for dummy pull request or leave blank to skip:"
+dummy = STDIN.gets
+pull(dummy)
