@@ -24,22 +24,26 @@ def shell (command)
 end
 
 def checkArg (pattern, string)
-  values = string.scan(pattern).flatten.uniq!
+  values = string.scan(pattern).flatten.uniq
   raise ArgumentError, "Argument is invalid: #{string}" unless values.length==1
   #puts "Found #{values.first}"
   return values.first
 end
 
-@user = ARGV[0]
-@gitdirectory = ARGV[1].split(":").last
-@branch = ARGV[2].nil? ? "Feature" : ARGV[2]
-@source = checkArg(%r[(?<=:)(\S+)(?=\/)], ARGV[1])
-@repoName = checkArg(%r[(?<=\/)(\S+)(?=\.)],ARGV[1])
+def run
+  @user = ARGV[0]
+  @gitdirectory = ARGV[1].split(":").last
+  @branch = ARGV[2].nil? ? "Feature" : ARGV[2]
+  @source = checkArg(%r[(?<=:)(\S+)(?=\/)], ARGV[1])
+  @repoName = checkArg(%r[(?<=\/)(\S+)(?=\.)],ARGV[1])
 
-fork(@user,@source,@repoName)
-clone(@user,@repoName,@branch)
+  fork(@user,@source,@repoName)
+  clone(@user,@repoName,@branch)
 
-puts "Create an initial commit for pull request?"
-puts "If so, provide a value for dummy pull request or leave blank to skip:"
-dummy = STDIN.gets
-pull(dummy)
+  puts "Create an initial commit for pull request?"
+  puts "If so, provide a value for dummy pull request or leave blank to skip:"
+  dummy = STDIN.gets.chomp
+  pull(dummy)
+end
+
+run
