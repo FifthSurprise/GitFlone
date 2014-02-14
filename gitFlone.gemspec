@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
  s.name = 'GitFlone'
- s.version = '0.0.1'
+ s.version = '0.0.2'
  s.executables << 'gitFlone'
  s.date = '2014-02-14'
  s.summary = "Fork & clone a repository from the Terminal"
