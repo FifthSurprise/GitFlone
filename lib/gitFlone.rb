@@ -10,10 +10,11 @@ class GitFlone
     else
       shell %Q[curl -u '#{user}' https://api.github.com/repos/#{source}/#{repoName}/forks -d '{}']
     end
+    sleep(1) #ensure fork is there
   end
 
   def clone (user,repoName, branch="Feature")
-    shell"git clone git@github.com:#{user}/#{repoName}.git"
+    shell %Q[git clone git@github.com:#{user}/#{repoName}.git]
     Dir.chdir("#{repoName}")
     shell %Q[git checkout -b #{branch}]
     shell %Q[git push origin #{branch}]
