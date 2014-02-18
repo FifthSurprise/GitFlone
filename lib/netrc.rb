@@ -8,9 +8,9 @@ class NetRC
       puts @token
     else
       #create the .netrc file in home directory
-      new_file = File.new("#{ENV['HOME']}/.netrc", "w")
-      generateToken(new_file)
-      new_file.close
+      # new_file = File.new("#{ENV['HOME']}/.netrc", "w")
+      # generateToken(new_file)
+      # new_file.close
     end
 
   end
@@ -35,8 +35,6 @@ class NetRC
   end
 
   def has_token?
-    return @token.length==40
+    return !@token.nil? && @token.length==40
   end
 end
-
-n = NetRC.new
