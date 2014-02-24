@@ -1,6 +1,6 @@
 class NetRC
 
-  attr_accessor :token
+  attr_accessor :token, :user
   def initialize
     #Check if there is a .netrc file to read from
     if File.exists?("#{ENV['HOME']}/.netrc")
@@ -18,10 +18,12 @@ class NetRC
   def parseToken (path)
     begin
       f = File.open("#{path}", "r")
-      netRCPattern = %r[(machine github.com login).+]
+      netRCPattern = %r[(machine github.com) (\S+) (\S+)]
       tokenPattern = %r[(?<=login ).{40}]
       githubLine = f.each_line.select{|line|line.match(netRCPattern)}
-      @token = githubLine.first.scan(tokenPattern).first
+      values = githubLine.first
+      @user = values[1]
+      @token = values[2] if (values[2].index(tokenPattern))
       f.close
       true
     rescue
@@ -29,8 +31,8 @@ class NetRC
     end
   end
 
+  #need to prompt for user
   def generateToken (file)
-
     file.puts("machine github.com login ")
   end
 
