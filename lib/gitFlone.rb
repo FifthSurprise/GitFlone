@@ -48,13 +48,13 @@ class GitFlone
     @source = checkArg(%r[(?<=:)(\S+)(?=\/)], ARGV[1])
     @repoName = checkArg(%r[(?<=\/)(\S+)(?=\.)],ARGV[1])
 
-    fork(@source,@repoName)
-    clone(@repoName,@branch)
+    # fork(@source,@repoName)
+    # clone(@repoName,@branch)
 
-    puts "Create an initial commit for pull request?"
-    puts "If so, provide a value for dummy pull request or leave blank to skip:"
-    dummy = STDIN.gets.chomp
-    pull(dummy)
+    # puts "Create an initial commit for pull request?"
+    # puts "If so, provide a value for dummy pull request or leave blank to skip:"
+    # dummy = STDIN.gets.chomp
+    # pull(dummy)
   end
 end
 GitFlone.new.run
