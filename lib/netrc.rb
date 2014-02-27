@@ -5,7 +5,6 @@ class NetRC
     #Check if there is a .netrc file to read from
     if File.exists?("#{ENV['HOME']}/.netrc")
       puts "Success? #{parseToken("#{ENV['HOME']}/.netrc")}"
-      puts @token
     else
       #create the .netrc file in home directory
       # new_file = File.new("#{ENV['HOME']}/.netrc", "w")
@@ -19,11 +18,11 @@ class NetRC
     begin
       f = File.open("#{path}", "r")
       netRCPattern = %r[(machine github.com) (\S+) (\S+)]
-      tokenPattern = %r[(?<=login ).{40}]
+      tokenPattern = %r[.{40}]
       githubLine = f.each_line.select{|line|line.match(netRCPattern)}
-      values = githubLine.first
-      @user = values[1]
-      @token = values[2] if (values[2].index(tokenPattern))
+      values = githubLine.first.split(" ")
+      @user = values[2]
+      @token = values[3] if (values[3].index(tokenPattern))
       f.close
       true
     rescue

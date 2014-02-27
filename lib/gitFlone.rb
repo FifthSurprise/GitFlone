@@ -1,20 +1,21 @@
 require_relative 'netrc'
+
 class GitFlone
   def initialize
     @netrc = NetRC.new
   end
 
-  def fork(user, source,repoName)
+  def fork(source,repoName)
     if @netrc.has_token?
       shell %Q[curl -H 'Authorization: token #{@netrc.token}' https://api.github.com/repos/#{source}/#{repoName}/forks -d '{}']
     else
-      shell %Q[curl -u '#{user}' https://api.github.com/repos/#{source}/#{repoName}/forks -d '{}']
+      shell %Q[curl -u '#{@netrc.user}' https://api.github.com/repos/#{source}/#{repoName}/forks -d '{}']
     end
     sleep(1) #ensure fork is there
   end
 
-  def clone (user,repoName, branch="Feature")
-    shell %Q[git clone git@github.com:#{user}/#{repoName}.git]
+  def clone (repoName, branch="Feature")
+    shell %Q[git clone git@github.com:#{@netrc.user}/#{repoName}.git]
     Dir.chdir("#{repoName}")
     shell %Q[git checkout -b #{branch}]
     shell %Q[git push origin #{branch}]
@@ -27,7 +28,7 @@ class GitFlone
       shell %Q[git commit -am "Initial #{@branch} commit"]
       shell %Q[git push origin #{@branch}]
     end
-    shell %Q[open https://github.com/#{@user}/#{@repoName}/compare/#{@branch}?expand=1]
+    shell %Q[open https://github.com/#{@netrc.user}/#{@repoName}/compare/#{@branch}?expand=1]
   end
 
   def shell (command)
@@ -47,8 +48,8 @@ class GitFlone
     @source = checkArg(%r[(?<=:)(\S+)(?=\/)], ARGV[1])
     @repoName = checkArg(%r[(?<=\/)(\S+)(?=\.)],ARGV[1])
 
-    fork(@user,@source,@repoName)
-    clone(@user,@repoName,@branch)
+    fork(@source,@repoName)
+    clone(@repoName,@branch)
 
     puts "Create an initial commit for pull request?"
     puts "If so, provide a value for dummy pull request or leave blank to skip:"
