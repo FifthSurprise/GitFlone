@@ -32,7 +32,7 @@ class GitFlone
   end
 
   def shell (command)
-    puts `#{command}`
+   `#{command}`
   end
 
   def checkArg (pattern, string)
@@ -42,19 +42,17 @@ class GitFlone
   end
 
   def run
-    @user = ARGV[0]
-    @gitdirectory = ARGV[1].split(":").last
-    @branch = ARGV[2].nil? ? "Feature" : ARGV[2]
-    @source = checkArg(%r[(?<=:)(\S+)(?=\/)], ARGV[1])
-    @repoName = checkArg(%r[(?<=\/)(\S+)(?=\.)],ARGV[1])
+    @gitdirectory = ARGV[0].split(":").last
+    @branch = ARGV[1].nil? ? "Feature" : ARGV[1]
+    @source = checkArg(%r[(?<=:)(\S+)(?=\/)], ARGV[0])
+    @repoName = checkArg(%r[(?<=\/)(\S+)(?=\.)],ARGV[0])
+    fork(@source,@repoName)
+    clone(@repoName,@branch)
 
-    # fork(@source,@repoName)
-    # clone(@repoName,@branch)
-
-    # puts "Create an initial commit for pull request?"
-    # puts "If so, provide a value for dummy pull request or leave blank to skip:"
-    # dummy = STDIN.gets.chomp
-    # pull(dummy)
+    puts "Create an initial commit for pull request?"
+    puts "If so, provide a value for dummy pull request or leave blank to skip:"
+    dummy = STDIN.gets.chomp
+    pull(dummy)
   end
 end
-GitFlone.new.run
+

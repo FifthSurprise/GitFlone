@@ -1,9 +1,10 @@
 class NetRC
 
-  attr_accessor :token, :user
+  attr_accessor :token, :user, :path
   def initialize
+    @path = "#{ENV['HOME']}/.netrc"
     #Check if there is a .netrc file to read from
-    if File.exists?("#{ENV['HOME']}/.netrc")
+    if File.exists?(path)
       puts "Success? #{parseToken("#{ENV['HOME']}/.netrc")}"
     else
       #create the .netrc file in home directory
@@ -33,15 +34,24 @@ class NetRC
 
   #need to prompt for user
   def generateToken (file)
-    puts "Please provide username."
+    puts "Generating token..."
+    puts "Please provide username:"
     @user = STDIN.gets.chomp
 
-    shell %Q[curl -i -u #{@user} -d '{"scopes": ["repo"],"note": "gitFlone"}' https://api.github.com/authorizations]
+    puts "Need to generate token automatically"
+    response = shell %Q[curl -i -u #{@user} -d '{"scopes": ["repo"],"note": "gitFlone"}' https://api.github.com/authorizations]
+    @token = checkArg(%r[(?<="token": ")(.{40})(?=")],response)
     file.puts("machine github.com #{@user} #{@token}")
   end
 
   def shell (command)
-    puts `#{command}`
+    `#{command}`
+  end
+
+  def checkArg (pattern, string)
+    values = string.scan(pattern).flatten.uniq
+    raise ArgumentError, "Argument is invalid: #{string}" unless values.length==1
+    return values.first
   end
 
   def has_token?
